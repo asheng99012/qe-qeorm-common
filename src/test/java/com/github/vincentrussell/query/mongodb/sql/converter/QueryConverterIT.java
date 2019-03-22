@@ -15,14 +15,6 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.InsertOneModel;
 import com.mongodb.client.model.WriteModel;
-import de.flapdoodle.embed.mongo.MongodExecutable;
-import de.flapdoodle.embed.mongo.MongodProcess;
-import de.flapdoodle.embed.mongo.MongodStarter;
-import de.flapdoodle.embed.mongo.config.IMongodConfig;
-import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
-import de.flapdoodle.embed.mongo.config.Net;
-import de.flapdoodle.embed.mongo.distribution.Version;
-import org.apache.commons.io.IOUtils;
 import org.bson.BsonDocument;
 import org.bson.BsonString;
 import org.bson.Document;
@@ -43,9 +35,6 @@ import static org.junit.Assert.assertEquals;
 public class QueryConverterIT {
 
     private static final int TOTAL_TEST_RECORDS = 25359;
-    private static MongodStarter starter = MongodStarter.getDefaultInstance();
-    private static MongodProcess mongodProcess;
-    private static MongodExecutable mongodExecutable;
     private static int port = getRandomFreePort();
     private static com.mongodb.client.MongoClient mongoClient;
     private static final String DATABASE = "local";
@@ -56,43 +45,6 @@ public class QueryConverterIT {
 
     private static MongodbConnection connection;
 
-    //    @BeforeClass
-    public static void beforeClass() throws IOException {
-        IMongodConfig mongodConfig = new MongodConfigBuilder()
-                .version(Version.Main.PRODUCTION)
-                .net(new Net("localhost", port, false))
-                .build();
-
-        mongodExecutable = starter.prepare(mongodConfig);
-        mongodProcess = mongodExecutable.start();
-//        mongoClient = new MongoClient("localhost",port);
-
-
-        mongoDatabase = mongoClient.getDatabase(DATABASE);
-        mongoCollection = mongoDatabase.getCollection(COLLECTION);
-
-        List<Document> documents = new ArrayList<>(TOTAL_TEST_RECORDS);
-        try (InputStream inputStream = QueryConverterIT.class.getResourceAsStream("/primer-dataset.json");
-             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))) {
-
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                documents.add(Document.parse(line));
-            }
-        }
-
-        for (Iterator<List<WriteModel>> iterator = Iterables.partition(Lists.transform(documents, new Function<Document, WriteModel>() {
-            @Override
-            public WriteModel apply(Document document) {
-                return new InsertOneModel(document);
-            }
-        }), 10000).iterator(); iterator.hasNext(); ) {
-            mongoCollection.bulkWrite(iterator.next());
-        }
-
-        assertEquals(TOTAL_TEST_RECORDS, mongoCollection.count());
-
-    }
 
     //    @BeforeClass
     public static void start() {
@@ -523,14 +475,14 @@ public class QueryConverterIT {
 
     private static String toJson(List<Document> documents) throws IOException {
         StringWriter stringWriter = new StringWriter();
-        IOUtils.write("[", stringWriter);
-        IOUtils.write(Joiner.on(",").join(Lists.transform(documents, new com.google.common.base.Function<Document, String>() {
-            @Override
-            public String apply(Document document) {
-                return document.toJson(jsonWriterSettings);
-            }
-        })), stringWriter);
-        IOUtils.write("]", stringWriter);
+//        IOUtils.write("[", stringWriter);
+//        IOUtils.write(Joiner.on(",").join(Lists.transform(documents, new com.google.common.base.Function<Document, String>() {
+//            @Override
+//            public String apply(Document document) {
+//                return document.toJson(jsonWriterSettings);
+//            }
+//        })), stringWriter);
+//        IOUtils.write("]", stringWriter);
         return stringWriter.toString();
     }
 }

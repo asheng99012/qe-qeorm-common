@@ -165,6 +165,11 @@ public class MongodbDataSource extends DruidAbstractDataSource {
 
     }
 
+    @Override
+    public void handleConnectionException(DruidPooledConnection conn, Throwable t, String sql) throws SQLException {
+
+    }
+
     protected void recycle(DruidPooledConnection pooledConnection) throws SQLException {
 
     }
