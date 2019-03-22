@@ -151,7 +151,7 @@ public class SQLCommandInfoHolder {
                 List<Column> columns = insert.getColumns();
                 List<Expression> expressions = ((ExpressionList) insert.getItemsList()).getExpressions();
                 for (int i = 0; i < columns.size(); i++) {
-                    map.put(columns.get(i).getColumnName(), SqlUtils.getValue(expressions.get(i)));
+                    map.put(columns.get(i).getColumnName().replaceAll("`", ""), SqlUtils.getValue(expressions.get(i)));
                 }
                 items = new Document(map);
             } else if (Update.class.isAssignableFrom(statement.getClass())) {
@@ -162,7 +162,7 @@ public class SQLCommandInfoHolder {
                 List<Column> columns = update.getColumns();
                 List<Expression> expressions = update.getExpressions();
                 for (int i = 0; i < columns.size(); i++) {
-                    map.put(columns.get(i).getColumnName(), SqlUtils.getValue(expressions.get(i)));
+                    map.put(columns.get(i).getColumnName().replaceAll("`", ""), SqlUtils.getValue(expressions.get(i)));
                 }
                 items = new Document(map);
                 whereClause = update.getWhere();

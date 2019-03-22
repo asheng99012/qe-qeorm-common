@@ -44,8 +44,32 @@ public class QeormTest {
         }};
         String sql = "select * from rpc_logs where  create_at>=:create_at  order by create_at desc";
         Object ret = SqlExecutor.execSql(sql, params, Map.class, "mongo");
-        sql="select count(*) from rpc_logs where  create_at>=:create_at  order by create_at desc";
-        ret=SqlExecutor.execSqlForObject(sql, params, Integer.class, "mongo");
+        sql = "select count(*) from rpc_logs where  create_at>=:create_at  order by create_at desc";
+        ret = SqlExecutor.execSqlForObject(sql, params, Integer.class, "mongo");
         System.out.println(ret);
     }
+
+    @Test
+    public void testModelSelect() throws ParseException {
+        RpcLog insert = new RpcLog();
+        insert.setDataId("123456");
+        insert.setTraceId("thistraceid");
+        insert.setCreateAt(new Date());
+        Map params = new HashMap() {{
+            put("create_at", DateUtils.parseDate("2019-03-10", "yyyy-MM-dd"));
+            put("pn", 2);
+            put("ps", 5);
+        }};
+        Object ret;
+        insert.setRequestData(params);
+        ret = insert.insert();
+        RpcLog log = new RpcLog();
+        log.setDataId("123456");
+        ret = log.select();
+        ret = log.count();
+        System.out.println("ok");
+
+    }
+
+
 }

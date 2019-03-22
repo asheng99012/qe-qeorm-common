@@ -25,16 +25,18 @@ public class MongoDBQueryHolder {
 
     /**
      * Pojo to hold the MongoDB data
-     * @param collection the collection that the query will be run on.
+     *
+     * @param collection     the collection that the query will be run on.
      * @param sqlCommandType
      */
-    public MongoDBQueryHolder(String collection, SQLCommandType sqlCommandType){
-        this.collection = collection;
+    public MongoDBQueryHolder(String collection, SQLCommandType sqlCommandType) {
+        this.collection = collection.replaceAll("`", "");
         this.sqlCommandType = sqlCommandType;
     }
 
     /**
      * Get the object used to create a projection
+     *
      * @return the fields to be returned by the quer
      */
     public Document getProjection() {
@@ -43,6 +45,7 @@ public class MongoDBQueryHolder {
 
     /**
      * Get the object used to create a query
+     *
      * @return the where clause section of the query in mongo formt
      */
     public Document getQuery() {
@@ -51,6 +54,7 @@ public class MongoDBQueryHolder {
 
     /**
      * Get the collection to run the query on
+     *
      * @return the collection to run the query on
      */
     public String getCollection() {
@@ -129,20 +133,20 @@ public class MongoDBQueryHolder {
         return sqlCommandType;
     }
 
-    public void dealQuery(Document doc){
-        for(Map.Entry entry:doc.entrySet()){
-            Object value=entry.getValue();
-            if(value instanceof List){
-                List list=(List)value;
-                for(int i=0;i<list.size();i++){
-                    dealQuery((Document)list.get(i));
+    public void dealQuery(Document doc) {
+        for (Map.Entry entry : doc.entrySet()) {
+            Object value = entry.getValue();
+            if (value instanceof List) {
+                List list = (List) value;
+                for (int i = 0; i < list.size(); i++) {
+                    dealQuery((Document) list.get(i));
                 }
             }
-            if(value instanceof Document){
-                dealQuery((Document)value);
+            if (value instanceof Document) {
+                dealQuery((Document) value);
             }
-            if(value instanceof String){
-                String val=(String)value;
+            if (value instanceof String) {
+                String val = (String) value;
                 if (val.matches("^\\d{4}-\\d{1,2}-\\d{1,2}(\\s\\d{1,2}:\\d{1,2}:\\d{1,2}(.\\d{1,5})?)?$")) {
                     if (val.indexOf(" ") == -1) {
                         val = val + " 00:00:00";
