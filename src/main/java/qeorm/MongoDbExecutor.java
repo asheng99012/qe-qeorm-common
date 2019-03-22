@@ -1,20 +1,15 @@
-package com.github.vincentrussell.query.mongodb.sql.converter.jdbc;
+package qeorm;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import com.github.vincentrussell.query.mongodb.sql.converter.ParseException;
 import com.github.vincentrussell.query.mongodb.sql.converter.ResultUtils;
+import com.github.vincentrussell.query.mongodb.sql.converter.jdbc.MongodbConnection;
+import com.github.vincentrussell.query.mongodb.sql.converter.jdbc.MongodbDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
-import qeorm.*;
 import qeorm.utils.JsonUtils;
 import qeorm.utils.Wrap;
 
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 

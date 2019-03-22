@@ -96,7 +96,7 @@ public class QueryConverterIT {
                 "and (update_at > '2018-1-1' or update_at < '2020-1-1' )"
                 + " order by create_at desc limit 5,2";
 //        sql = "select * from rpc_logs where  date(create_at)>='2019-03-22 0:00:00'  order by create_at desc";
-        List list = ResultUtils.exec(mongoDatabase, sql);
+        List list = ResultUtils.exec(connection, sql);
         System.out.println(list);
     }
 
