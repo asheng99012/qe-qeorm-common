@@ -50,6 +50,7 @@ public class MongoDbExecutor extends SqlResultExecutor {
             @Override
             public String exec(Matcher m) {
                 Object val = wrap.getValue(m.group(1));
+                if (val == null) return null;
                 if (val instanceof Number || val instanceof Boolean)
                     return String.valueOf(val);
                 if (val instanceof Date) {
