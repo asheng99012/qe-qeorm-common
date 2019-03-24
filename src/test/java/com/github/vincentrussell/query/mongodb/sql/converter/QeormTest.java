@@ -1,6 +1,7 @@
 package com.github.vincentrussell.query.mongodb.sql.converter;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.fastjson.JSON;
 import com.github.vincentrussell.query.mongodb.sql.converter.jdbc.MongodbDataSource;
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Before;
@@ -15,7 +16,7 @@ import java.util.*;
 public class QeormTest {
     SqlSession session;
 
-    @Before
+    //    @Before
     public void setup() throws Exception {
         session = new SqlSession();
         MongodbDataSource dataSource = new MongodbDataSource();
@@ -33,6 +34,34 @@ public class QeormTest {
         Map<String, DataSource> dataSourcesMap = new HashMap<>();
         dataSourcesMap.put("mongo", dataSource);
         session.setDataSources(dataSourcesMap);
+    }
+
+    @Before
+    public void setupProduc() throws Exception {
+        session = new SqlSession();
+        MongodbDataSource dataSource = new MongodbDataSource();
+        dataSource.setUrl("mongodb://172.21.100.21:27017,172.21.100.20:27017,172.21.100.22:27017");
+        dataSource.setUsername("logs_user");
+        dataSource.setPassword("tiXcaDtioasdS");
+        dataSource.setDatabase("installment");
+        dataSource.setMaxPoolSize(10);
+        dataSource.setWaitQueueMultiple(100);
+        dataSource.setSafe("true");
+        dataSource.setConnectTimeout(10000);
+        dataSource.setServerSelectionTimeout(30000);
+        dataSource.setReadPreference("secondaryPreferred");
+        dataSource.setAuthMechanism("SCRAM-SHA-1");
+        Map<String, DataSource> dataSourcesMap = new HashMap<>();
+        dataSourcesMap.put("mongo", dataSource);
+        session.setDataSources(dataSourcesMap);
+    }
+
+    @Test
+    public void tongji() {
+        String sql = "select type,count(*) from rpc_logs where create_at>'2019-03-23' and handle_len>5000 group by type";
+        Object ret = SqlExecutor.execSql(sql, null, Map.class, "mongo");
+        System.out.println(ret);
+        System.out.println(JSON.toJSONString(ret));
     }
 
     @Test
