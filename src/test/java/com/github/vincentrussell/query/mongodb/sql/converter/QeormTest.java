@@ -6,6 +6,7 @@ import com.github.vincentrussell.query.mongodb.sql.converter.jdbc.MongodbDataSou
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Before;
 import org.junit.Test;
+import qeorm.CacheManager;
 import qeorm.SqlExecutor;
 import qeorm.SqlSession;
 
@@ -80,6 +81,7 @@ public class QeormTest {
 
     @Test
     public void testModelSelect() throws ParseException {
+        CacheManager.instance.open();
         RpcLog insert = new RpcLog();
         insert.setDataId("123456");
         insert.setTraceId("thistraceid");
