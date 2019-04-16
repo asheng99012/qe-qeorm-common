@@ -15,6 +15,7 @@ public class MongoDBQueryHolder {
     private final SQLCommandType sqlCommandType;
     private Document query = new Document();
     private Document projection = new Document();
+    private Document aliseProjection = new Document();
     private Document sort = new Document();
     private boolean distinct = false;
     private boolean countAll = false;
@@ -76,6 +77,14 @@ public class MongoDBQueryHolder {
         this.projection = projection;
     }
 
+    public Document getAliseProjection() {
+        return aliseProjection;
+    }
+
+    public void setAliseProjection(Document aliseProjection) {
+        this.aliseProjection = aliseProjection;
+    }
+
     public Document getSort() {
         return sort;
     }
@@ -135,6 +144,7 @@ public class MongoDBQueryHolder {
 
     public void dealQuery(Document doc) {
         for (Map.Entry entry : doc.entrySet()) {
+            if(entry.getKey().equals("$in"))continue;
             Object value = entry.getValue();
             if (value instanceof List) {
                 List list = (List) value;

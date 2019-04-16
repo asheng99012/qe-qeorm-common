@@ -59,7 +59,10 @@ public class QeormTest {
 
     @Test
     public void tongji() {
-        String sql = "select type,count(*) from rpc_logs where create_at>'2019-03-23' and handle_len>5000 group by type";
+        String sql = "select type as mytype,count(*) as cc from rpc_logs where create_at>'2019-04-01' and handle_len>3000 group by type";
+         sql = "select * from rpc_logs order by create_at desc limit 1,10";
+
+//        sql = " SELECT     a.city_name,    sum(CASE WHEN a.monthly_price <= 2000  THEN 1 ELSE 0 END) as '0-2,000', sum(CASE WHEN a.monthly_price > 2000 AND a.monthly_price <= 4000 THEN 1 ELSE 0 END) as '2,000-4,000' FROM webank_shoufang_detail a  ";
         Object ret = SqlExecutor.execSql(sql, null, Map.class, "mongo");
         System.out.println(ret);
         System.out.println(JSON.toJSONString(ret));
@@ -68,11 +71,13 @@ public class QeormTest {
     @Test
     public void testSelect() throws ParseException {
         Map params = new HashMap() {{
-            put("create_at", DateUtils.parseDate("2019-03-10", "yyyy-MM-dd"));
+            put("create_at_start", "2019-04-06 10:24:09");
+            put("create_at_end", "2019-04-07 10:24:09");
             put("pn", 2);
             put("ps", 5);
         }};
         String sql = "select * from rpc_logs where  create_at>=:create_at  order by create_at desc";
+        sql="select type,count(*) FROM rpc_logs where type in ('com.dankegongyu.risk.provider.baidu.FaceMatch0008','com.dankegongyu.risk.provider.netease.VoiceRecognition0011') and   created_at >{create_at_start} AND created_at < {create_at_end} group by type ";
         Object ret = SqlExecutor.execSql(sql, params, Map.class, "mongo");
         sql = "select count(*) from rpc_logs where  create_at>=:create_at  order by create_at desc";
         ret = SqlExecutor.execSqlForObject(sql, params, Integer.class, "mongo");

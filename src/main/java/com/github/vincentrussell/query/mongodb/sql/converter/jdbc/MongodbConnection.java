@@ -15,6 +15,7 @@ public class MongodbConnection implements Connection {
 
     public void setMongodbDataSource(MongodbDataSource mongodbDataSource) {
         this.mongoConfig = mongodbDataSource;
+        getDataBase();
     }
 
     public MongoDatabase getDataBase() {

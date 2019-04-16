@@ -96,6 +96,7 @@ public class QueryConverterIT {
                 "and (update_at > '2018-1-1' or update_at < '2020-1-1' )"
                 + " order by create_at desc limit 5,2";
 //        sql = "select * from rpc_logs where  date(create_at)>='2019-03-22 0:00:00'  order by create_at desc";
+        sql="select type,count(*) FROM rpc_logs where type in (\"com.dankegongyu.risk.provider.baidu.FaceMatch0008\",\"com.dankegongyu.risk.provider.netease.VoiceRecognition0011\") and created_at >'2019-04-06 10:24:09' AND created_at < '2019-04-17 10:24:09' group by type ";
         List list = ResultUtils.exec(connection, sql);
         System.out.println(list);
     }
