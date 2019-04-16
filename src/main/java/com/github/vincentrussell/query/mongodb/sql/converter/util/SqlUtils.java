@@ -397,27 +397,42 @@ public class SqlUtils {
         if (ComparisonOperator.class.isInstance(incomingExpression)) {
             ComparisonOperator comparisonOperator = (ComparisonOperator) incomingExpression;
             String rightExpression = getStringValue(comparisonOperator.getRightExpression());
-            if (Function.class.isInstance(comparisonOperator.getLeftExpression())) {
-                Function function = ((Function) comparisonOperator.getLeftExpression());
-                if ("date".equals(function.getName().toLowerCase())
-//                        && (function.getParameters().getExpressions().size() == 2)
-//                        && StringValue.class.isInstance(function.getParameters().getExpressions().get(1))
-                        ) {
-                    String column = getStringValue(function.getParameters().getExpressions().get(0));
-                    DateFunction dateFunction = null;
-                    try {
-                        String format = "natural";
-                        if (function.getParameters().getExpressions().size() == 2)
-                            format = ((StringValue) (function.getParameters().getExpressions().get(1))).getValue();
-                        dateFunction = new DateFunction(format, rightExpression, column);
-                        dateFunction.setComparisonFunction(comparisonOperator);
-                    } catch (IllegalArgumentException e) {
-                        throw new ParseException(e.getMessage());
-                    }
-                    return dateFunction;
+            if (rightExpression.matches("^\\d{4}-\\d{1,2}-\\d{1,2}(\\s\\d{1,2}:\\d{1,2}:\\d{1,2}(.\\d{1,5})?)?$")) {
+                if (rightExpression.indexOf(" ") == -1) {
+                    rightExpression = rightExpression + " 00:00:00";
                 }
-
+                String column = ((Column)comparisonOperator.getLeftExpression()).getColumnName();
+                DateFunction dateFunction = null;
+                try {
+                    String format = "natural";
+                    dateFunction = new DateFunction(format, rightExpression, column);
+                    dateFunction.setComparisonFunction(comparisonOperator);
+                } catch (IllegalArgumentException e) {
+                    throw new ParseException(e.getMessage());
+                }
+                return dateFunction;
             }
+//            if (Function.class.isInstance(comparisonOperator.getLeftExpression())) {
+//                Function function = ((Function) comparisonOperator.getLeftExpression());
+//                if ("date".equals(function.getName().toLowerCase())
+////                        && (function.getParameters().getExpressions().size() == 2)
+////                        && StringValue.class.isInstance(function.getParameters().getExpressions().get(1))
+//                        ) {
+//                    String column = getStringValue(function.getParameters().getExpressions().get(0));
+//                    DateFunction dateFunction = null;
+//                    try {
+//                        String format = "natural";
+//                        if (function.getParameters().getExpressions().size() == 2)
+//                            format = ((StringValue) (function.getParameters().getExpressions().get(1))).getValue();
+//                        dateFunction = new DateFunction(format, rightExpression, column);
+//                        dateFunction.setComparisonFunction(comparisonOperator);
+//                    } catch (IllegalArgumentException e) {
+//                        throw new ParseException(e.getMessage());
+//                    }
+//                    return dateFunction;
+//                }
+//
+//            }
         }
         return null;
     }

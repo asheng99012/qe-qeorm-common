@@ -71,13 +71,15 @@ public class QeormTest {
     @Test
     public void testSelect() throws ParseException {
         Map params = new HashMap() {{
-            put("create_at_start", "2019-04-06 10:24:09");
-            put("create_at_end", "2019-04-07 10:24:09");
-            put("pn", 2);
-            put("ps", 5);
+            put("create_at_start", "2019-04-16 10:24:09");
+            put("create_at_end", "2019-04-17 10:24:09");
+//            put("pn", 2);
+//            put("ps", 5);
         }};
         String sql = "select * from rpc_logs where  create_at>=:create_at  order by create_at desc";
-        sql="select type,count(*) FROM rpc_logs where type in ('com.dankegongyu.risk.provider.baidu.FaceMatch0008','com.dankegongyu.risk.provider.netease.VoiceRecognition0011') and   created_at >{create_at_start} AND created_at < {create_at_end} group by type ";
+        sql="select type,count(*) FROM rpc_logs where   create_at >{create_at_start} AND create_at < {create_at_end} group by type ";
+        sql="select type,count(*) FROM rpc_logs where type in ('com.dankegongyu.risk.sence.item.voice.VoiceRecognition','com.dankegongyu.thirdparty.controller.filter.LogFilter'\n) and  create_at >{create_at_start} AND create_at < {create_at_end}  group by type";
+
         Object ret = SqlExecutor.execSql(sql, params, Map.class, "mongo");
         sql = "select count(*) from rpc_logs where  create_at>=:create_at  order by create_at desc";
         ret = SqlExecutor.execSqlForObject(sql, params, Integer.class, "mongo");
