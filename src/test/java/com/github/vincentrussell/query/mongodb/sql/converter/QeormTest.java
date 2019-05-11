@@ -78,7 +78,7 @@ public class QeormTest {
         }};
         String sql = "select * from rpc_logs where  create_at>=:create_at  order by create_at desc";
         sql="select type,count(*) FROM rpc_logs where   create_at >{create_at_start} AND create_at < {create_at_end} group by type ";
-        sql="select type,count(*) FROM rpc_logs where type in ('com.dankegongyu.risk.sence.item.voice.VoiceRecognition','com.dankegongyu.thirdparty.controller.filter.LogFilter'\n) and  create_at >{create_at_start} AND create_at < {create_at_end}  group by type";
+        sql="select type,count(*) FROM rpc_logs where type in ('com.dankegongyu.risk.sence.item.voice.VoiceRecognition','com.dankegongyu.thirdparty.controller.filter.LogFilter'\n) and  create_at >={create_at_start} AND create_at <= {create_at_end}  group by type";
 
         Object ret = SqlExecutor.execSql(sql, params, Map.class, "mongo");
         sql = "select count(*) from rpc_logs where  create_at>=:create_at  order by create_at desc";
