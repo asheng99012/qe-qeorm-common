@@ -23,7 +23,7 @@ public class MongoDbExecutor extends SqlResultExecutor {
     @Override
     public <T> T exec(Map<String, Object> map) {
         String sql = createSql(map);
-
+        sql = sql.replace("where 1=1 ", " ");
         logger.info("要在数据库{}上执行的sql：{} , 参数为：{}", getResult().getSqlConfig().getDbName(), sql, JsonUtils.toJson(map));
 
         try {
