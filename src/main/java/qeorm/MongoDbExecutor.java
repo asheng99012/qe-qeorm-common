@@ -59,7 +59,7 @@ public class MongoDbExecutor extends SqlResultExecutor {
                 }
                 if (!(val instanceof String))
                     val = JsonUtils.toJson(val);
-                return "'" + val + "'";
+                return "'" + val.toString().replaceAll("'","\\\\'") + "'";
             }
         });
         return sql;
