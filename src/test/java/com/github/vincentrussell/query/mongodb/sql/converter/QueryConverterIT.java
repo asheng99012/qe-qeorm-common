@@ -91,7 +91,7 @@ public class QueryConverterIT {
     }
 
     @Test
-    public void testSelect() throws ParseException {
+    public void testSelect() throws ParseException, IOException {
         String sql = "select * from rpc_logs where  create_at>='2019-03-19 0:00:00' and create_at<'2019-03-20 0:00:00' "
                 + " order by create_at desc limit 5,2";
 //        sql = "select * from rpc_logs where  date(create_at)>='2019-03-22 0:00:00'  order by create_at desc";
@@ -108,7 +108,7 @@ public class QueryConverterIT {
     }
 
     @Test
-    public void testCount() throws ParseException {
+    public void testCount() throws ParseException, IOException {
         String sql = "select count(*) from rpc_logs where  date(create_at)>='2019-03-19 0:00:00' and date(create_at)<'2019-03-20 0:00:00' order by create_at desc ";
         sql = "select count(*) from rpc_logs where  create_at>='2019-03-19 0:00:00' and create_at<'2019-03-20 0:00:00' order by create_at desc ";
         Object list = ResultUtils.exec(connection, sql);
@@ -116,35 +116,35 @@ public class QueryConverterIT {
     }
 
     @Test
-    public void testDistinct() throws ParseException {
+    public void testDistinct() throws ParseException, IOException {
         String sql = "select distinct data_id  from rpc_logs where  date(create_at)>='2019-03-19 0:00:00' and date(create_at)<'2019-03-20 0:00:00' order by create_at desc ";
         Object list = ResultUtils.exec(mongoDatabase, sql);
         System.out.println(list);
     }
 
     @Test
-    public void testGroupBY() throws ParseException {
+    public void testGroupBY() throws ParseException, IOException {
         String sql = "select url,status,count(*)  from rpc_logs where  create_at>='2019-03-19 0:00:00' and create_at<'2019-03-20 0:00:00' group by url,status ";
         Object list = ResultUtils.exec(mongoDatabase, sql);
         System.out.println(list);
     }
 
     @Test
-    public void testGroupBY1() throws ParseException {
+    public void testGroupBY1() throws ParseException, IOException {
         String sql = "select status,count(*) as dd  from rpc_logs where  date(create_at)>='2019-03-19 0:00:00' and date(create_at)<'2019-03-20 0:00:00' group by status ";
         Object list = ResultUtils.exec(mongoDatabase, sql);
         System.out.println(list);
     }
 
     @Test
-    public void testDelete() throws ParseException {
+    public void testDelete() throws ParseException, IOException {
         String sql = "delete from rpc_logs where  trace_id='wAPshdPJEZPqMv3fHHe' ";
         Object list = ResultUtils.exec(mongoDatabase, sql);
         System.out.println(list);
     }
 
     @Test
-    public void testInsert() throws ParseException {
+    public void testInsert() throws ParseException, IOException {
         MongoCollection mongoCollection = mongoDatabase.getCollection("rpc_logs");
         Map val = new HashMap() {{
             put("data_id", 11);
@@ -162,7 +162,7 @@ public class QueryConverterIT {
     }
 
     @Test
-    public void testUpdate() throws ParseException {
+    public void testUpdate() throws ParseException, IOException {
         MongoCollection mongoCollection = mongoDatabase.getCollection("rpc_logs");
         Map val = new HashMap() {{
             put("data_id", 123);
