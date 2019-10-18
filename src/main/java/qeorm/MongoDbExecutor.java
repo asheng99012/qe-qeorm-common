@@ -62,6 +62,7 @@ public class MongoDbExecutor extends SqlResultExecutor {
                 return "'" + val.toString().replaceAll("'","\\\\'") + "'";
             }
         });
+        sql=sql.replaceAll("\\n","<br />");
         return sql;
     }
 }
