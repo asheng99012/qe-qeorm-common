@@ -10,6 +10,7 @@ import qeorm.utils.JsonUtils;
 import qeorm.utils.Wrap;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
@@ -31,11 +32,22 @@ public class MongoDbExecutor extends SqlResultExecutor {
             MongodbDataSource dataSource = (MongodbDataSource) jdbc.getDataSource();
             MongodbConnection connection = (MongodbConnection) dataSource.getConnection();
             Object ret = ResultUtils.exec(connection, sql);
-            return (T) ret;
+            return (T) dealRet(ret);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e.getCause());
         }
+    }
+
+    public <T> T dealRet(Object ret) {
+        if (getResult().getSqlConfig().isPrimitive() && ret != null && ret instanceof List) {
+            List _ret = (List) ret;
+            if (_ret.size() == 0)
+                return null;
+            Map val = (Map) _ret.get(0);
+            return (T) ((Map.Entry) val.entrySet().toArray()[0]).getValue();
+        }
+        return (T) ret;
     }
 
     public String createSql(Map<String, Object> map) {
@@ -59,10 +71,10 @@ public class MongoDbExecutor extends SqlResultExecutor {
                 }
                 if (!(val instanceof String))
                     val = JsonUtils.toJson(val);
-                return "'" + val.toString().replaceAll("'","\\\\'") + "'";
+                return "'" + val.toString().replaceAll("'", "\\\\'") + "'";
             }
         });
-        sql=sql.replaceAll("\\n","<br />");
+        sql = sql.replaceAll("\\n", "<br />");
         return sql;
     }
 }
