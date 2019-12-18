@@ -3,12 +3,14 @@ package qeorm;
 import com.github.vincentrussell.query.mongodb.sql.converter.ResultUtils;
 import com.github.vincentrussell.query.mongodb.sql.converter.jdbc.MongodbConnection;
 import com.github.vincentrussell.query.mongodb.sql.converter.jdbc.MongodbDataSource;
+import com.mongodb.client.MongoDatabase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import qeorm.utils.JsonUtils;
 import qeorm.utils.Wrap;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -55,14 +57,27 @@ public class MongoDbExecutor extends SqlResultExecutor {
                     return String.valueOf(val);
                 if (val instanceof Date) {
                     String _val = JsonUtils.toJson(val);
-                    val = _val.replaceAll("\"", "&quot;");
+                    val = _val.replaceAll("\"", "");
                 }
                 if (!(val instanceof String))
                     val = JsonUtils.toJson(val);
-                return "'" + val.toString().replaceAll("'","&#39;") + "'";
+                return "'" + val.toString().replaceAll("'", "&#39;") + "'";
             }
         });
-        sql=sql.replaceAll("\\n","<br />");
+        sql = sql.replaceAll("\\n", "<br />");
         return sql;
+    }
+
+
+    public MongodbConnection getConn(String dbName) {
+        NamedParameterJdbcDaoSupport jdbc = (NamedParameterJdbcDaoSupport) SqlSession.instance.getSupport(dbName);
+        MongodbDataSource dataSource = (MongodbDataSource) jdbc.getDataSource();
+
+        try {
+            return (MongodbConnection) dataSource.getConnection();
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+            return null;
+        }
     }
 }

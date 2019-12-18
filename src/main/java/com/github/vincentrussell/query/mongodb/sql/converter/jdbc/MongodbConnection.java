@@ -12,14 +12,16 @@ import java.util.concurrent.Executor;
 public class MongodbConnection implements Connection {
     MongodbDataSource mongoConfig;
     MongoDatabase mongoDatabase;
+    MongoClient client;
+
 
     public void setMongodbDataSource(MongodbDataSource mongodbDataSource) {
         this.mongoConfig = mongodbDataSource;
         getDataBase();
     }
 
-    public MongoDatabase getDataBase() {
-        if (mongoDatabase == null) {
+    public MongoClient getClient() {
+        if (client == null) {
             StringBuilder builder = new StringBuilder();
             builder.append("mongodb://").append(mongoConfig.getUsername()).append(":").append(mongoConfig.getPassword())
                     .append("@").append(mongoConfig.getUrl().substring(10))
@@ -32,8 +34,14 @@ public class MongodbConnection implements Connection {
                     .append("&").append("waitQueueTimeoutMS=").append(mongoConfig.getServerSelectionTimeout())
                     .append("&").append("serverSelectionTimeoutMS=").append(mongoConfig.getServerSelectionTimeout())
                     .append("&").append("authMechanism=").append(mongoConfig.getAuthMechanism());
-            MongoClient mongoClient = MongoClients.create(builder.toString());
-            mongoDatabase = mongoClient.getDatabase(mongoConfig.getDatabase());
+            client = MongoClients.create(builder.toString());
+        }
+        return client;
+    }
+
+    public MongoDatabase getDataBase() {
+        if (mongoDatabase == null) {
+            mongoDatabase = getClient().getDatabase(mongoConfig.getDatabase());
         }
         return mongoDatabase;
     }
