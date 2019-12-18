@@ -55,7 +55,7 @@ public class MongoDbExecutor extends SqlResultExecutor {
                     return String.valueOf(val);
                 if (val instanceof Date) {
                     String _val = JsonUtils.toJson(val);
-                    val = _val.replaceAll("\"", "&quot;");
+                    val = _val.replaceAll("\"", "");
                 }
                 if (!(val instanceof String))
                     val = JsonUtils.toJson(val);
