@@ -31,6 +31,6 @@ public class Query {
             list.add(doc);
         });
         new MongoDbExecutor().getConn(dbName).getDataBase().getCollection(tableName).insertMany(list);
-        return 1;
+        return dataList.size();
     }
 }

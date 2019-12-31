@@ -1,9 +1,11 @@
 package qeorm;
 
+import com.github.vincentrussell.query.mongodb.sql.converter.Query;
 import com.github.vincentrussell.query.mongodb.sql.converter.ResultUtils;
 import com.github.vincentrussell.query.mongodb.sql.converter.jdbc.MongodbConnection;
 import com.github.vincentrussell.query.mongodb.sql.converter.jdbc.MongodbDataSource;
 import com.mongodb.client.MongoDatabase;
+import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
@@ -11,7 +13,9 @@ import qeorm.utils.JsonUtils;
 import qeorm.utils.Wrap;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
@@ -79,5 +83,14 @@ public class MongoDbExecutor extends SqlResultExecutor {
             logger.error(e.getMessage(), e);
             return null;
         }
+    }
+
+
+    public int insert(String dbName, String tableName, Map data) {
+        return Query.batchInsert(dbName, tableName, data);
+    }
+
+    public int batchInsert(String dbName, String tableName, List<Map> dataList) {
+        return Query.batchInsert(dbName, tableName, dataList);
     }
 }
