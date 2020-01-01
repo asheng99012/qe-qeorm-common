@@ -13,36 +13,14 @@ import java.util.Map;
  */
 public class MongodbModelBase extends ModelBase {
     public int insert() {
-        TableStruct table = TableStruct.getTableStruct(this.getClass().getName());
-        return Query.batchInsert(table.getMasterDbName(), table.getTableName(), fetchRealVal());
+        return SqlExecutor.insert(this);
     }
 
     public int update() {
-        TableStruct table = TableStruct.getTableStruct(this.getClass().getName());
-        Map json = fetchRealVal();
-        String key = table.getPrimaryKey();
-        return Query.update(table.getMasterDbName(), table.getTableName(), new Document(key, json.get(key)), json);
+        return SqlExecutor.update(this);
     }
 
     public int save() {
-        TableStruct table = TableStruct.getTableStruct(this.getClass().getName());
-        BeanMap thisMap = BeanMap.create(this);
-        if (thisMap.get(table.getPrimaryField()) != null) {
-            try {
-                ModelBase clone = this.getClass().newInstance();
-                BeanMap beanMap = BeanMap.create(clone);
-                beanMap.put(table.getPrimaryField(), thisMap.get(table.getPrimaryField()));
-                int count = clone.count();
-                if (count > 0) {
-                    return update();
-                } else {
-                    return insert();
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(e.getMessage(), e.getCause());
-            }
-        } else {
-            return insert();
-        }
+        return SqlExecutor.save(this);
     }
 }

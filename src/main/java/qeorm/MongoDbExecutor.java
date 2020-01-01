@@ -9,6 +9,7 @@ import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
+import qeorm.utils.FlatMaps;
 import qeorm.utils.JsonUtils;
 import qeorm.utils.Wrap;
 
@@ -25,6 +26,11 @@ import java.util.regex.Matcher;
 public class MongoDbExecutor extends SqlResultExecutor {
     private Logger logger = LoggerFactory.getLogger(MongoDbExecutor.class);
 
+    @Override
+    public MongoDbExecutor init(SqlConfig sqlConfig, Map<String, Object> map) {
+        super.init(sqlConfig, FlatMaps.flatMap(map));
+        return this;
+    }
 
     @Override
     public <T> T exec(Map<String, Object> map) {
@@ -85,12 +91,22 @@ public class MongoDbExecutor extends SqlResultExecutor {
         }
     }
 
-
-    public int insert(String dbName, String tableName, Map data) {
-        return Query.batchInsert(dbName, tableName, data);
+    @Override
+    public <T extends ModelBase> int insert(T model) {
+        TableStruct table = TableStruct.getTableStruct(model.getClass().getName());
+        return insert(table.getMasterDbName(), table.getTableName(), table.getPrimaryKey(), model.fetchRealVal());
     }
 
-    public int batchInsert(String dbName, String tableName, List<Map> dataList) {
+    @Override
+    public int batchInsert(String dbName, String tableName, String primaryKeyName, List<Map> dataList) {
         return Query.batchInsert(dbName, tableName, dataList);
+    }
+
+    @Override
+    public <T extends ModelBase> int update(T model) {
+        TableStruct table = TableStruct.getTableStruct(model.getClass().getName());
+        Map json = model.fetchRealVal();
+        String key = table.getPrimaryKey();
+        return Query.update(table.getMasterDbName(), table.getTableName(), new Document(key, json.get(key)), json);
     }
 }
