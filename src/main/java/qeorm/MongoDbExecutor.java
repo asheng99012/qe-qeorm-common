@@ -9,6 +9,7 @@ import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import qeorm.utils.FlatMaps;
 import qeorm.utils.JsonUtils;
 import qeorm.utils.Wrap;
@@ -108,5 +109,14 @@ public class MongoDbExecutor extends SqlResultExecutor {
         Map json = model.fetchRealVal();
         String key = table.getPrimaryKey();
         return Query.update(table.getMasterDbName(), table.getTableName(), new Document(key, json.get(key)), json);
+    }
+
+    @Override
+    public void dealQePage() {
+        Object ret = result.getResult();
+        if (ret instanceof List) {
+            qePage.addAll((List) ret);
+            result.setResult(qePage);
+        }
     }
 }
