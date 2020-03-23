@@ -339,7 +339,10 @@ public class QueryConverter {
      */
     public void write(OutputStream outputStream) throws IOException {
         MongoDBQueryHolder mongoDBQueryHolder = getMongoQuery();
-        if (mongoDBQueryHolder.isDistinct()) {
+        if(mongoDBQueryHolder.getSqlCommandType().equals(SQLCommandType.INSERT)){
+            IOUtils.write("db." + mongoDBQueryHolder.getCollection() + ".insert(", outputStream);
+            IOUtils.write(prettyPrintJson(mongoDBQueryHolder.getItems().toJson()), outputStream);
+        } else if (mongoDBQueryHolder.isDistinct()) {
             IOUtils.write("db." + mongoDBQueryHolder.getCollection() + ".distinct(", outputStream);
             IOUtils.write("\"" + getDistinctFieldName(mongoDBQueryHolder) + "\"", outputStream);
             IOUtils.write(" , ", outputStream);

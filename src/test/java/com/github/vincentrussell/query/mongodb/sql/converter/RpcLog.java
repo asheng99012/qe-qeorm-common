@@ -8,7 +8,8 @@ import qeorm.annotation.Transient;
 import java.util.Date;
 import java.util.Map;
 
-@Table(masterDbName = "mongo", slaveDbName = "mongo", primaryKey = "dataId", tableName = "rpc_logs", where = "data_id={dataId} and status={status}  and trace_id like {traceId}% and type={type} and create_at>{beginTime} and create_at<{endTime} and request_data={reqValue} and response_data={resValue} and url like {url}% and  error_msg like %{errorMsg}%")
+
+@Table(masterDbName = "mongo", slaveDbName = "mongo", primaryKey = "data_id", tableName = "rpc_logs", where = "data_id={dataId} and status={status}  and trace_id like {traceId}% and type={type} and create_at>{beginTime} and create_at<{endTime} and request_data={reqValue} and response_data={resValue} and url like {url}% and  error_msg like %{errorMsg}%")
 public class RpcLog extends MongodbModelBase {
 
     @Column("data_id")

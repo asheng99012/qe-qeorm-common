@@ -6,18 +6,27 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ResultUtils {
-    public static <T> T exec(MongodbConnection connection, String sql) throws ParseException {
+    static Logger logger = LoggerFactory.getLogger(ResultUtils.class);
+
+    public static <T> T exec(MongodbConnection connection, String sql) throws ParseException, IOException {
         return exec(connection.getDataBase(), sql);
     }
 
-    public static <T> T exec(MongoDatabase mongoDatabase, String sql) throws ParseException {
+    public static <T> T exec(MongoDatabase mongoDatabase, String sql) throws ParseException, IOException {
         QueryConverter queryConverter = new QueryConverter(sql);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        queryConverter.write(byteArrayOutputStream);
+        logger.info(byteArrayOutputStream.toString("UTF-8"));
         MongoDBQueryHolder mongoDBQueryHolder = queryConverter.getMongoQuery();
         SQLCommandType type = mongoDBQueryHolder.getSqlCommandType();
         Object ret = null;

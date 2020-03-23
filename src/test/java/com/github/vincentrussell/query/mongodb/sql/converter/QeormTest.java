@@ -41,11 +41,11 @@ public class QeormTest {
     public void setupProduc() throws Exception {
         session = new SqlSession();
         MongodbDataSource dataSource = new MongodbDataSource();
-        dataSource.setUrl("mongodb://172.21.100.21:27017,172.21.100.20:27017,172.21.100.22:27017");
-        dataSource.setUsername("logs_user");
-        dataSource.setPassword("tiXcaDtioasdS");
-        dataSource.setDatabase("installment");
-        dataSource.setMaxPoolSize(10);
+        dataSource.setUrl("mongodb://dev-mongodb.danke.life:27017");
+        dataSource.setUsername("fmis_log_writer");
+        dataSource.setPassword("w7XeVaDckk9R");
+        dataSource.setDatabase("fmis_log");
+        dataSource.setMaxPoolSize(1);
         dataSource.setWaitQueueMultiple(100);
         dataSource.setSafe("true");
         dataSource.setConnectTimeout(10000);
@@ -60,7 +60,7 @@ public class QeormTest {
     @Test
     public void tongji() {
         String sql = "select type as mytype,count(*) as cc from rpc_logs where create_at>'2019-04-01' and handle_len>3000 group by type";
-         sql = "select * from rpc_logs order by create_at desc limit 1,10";
+        sql = "select * from rpc_logs order by create_at desc limit 1,10";
 
 //        sql = " SELECT     a.city_name,    sum(CASE WHEN a.monthly_price <= 2000  THEN 1 ELSE 0 END) as '0-2,000', sum(CASE WHEN a.monthly_price > 2000 AND a.monthly_price <= 4000 THEN 1 ELSE 0 END) as '2,000-4,000' FROM webank_shoufang_detail a  ";
         Object ret = SqlExecutor.execSql(sql, null, Map.class, "mongo");
@@ -77,8 +77,8 @@ public class QeormTest {
 //            put("ps", 5);
         }};
         String sql = "select * from rpc_logs where  create_at>=:create_at  order by create_at desc";
-        sql="select type,count(*) FROM rpc_logs where   create_at >{create_at_start} AND create_at < {create_at_end} group by type ";
-        sql="select type,count(*) FROM rpc_logs where type in ('com.dankegongyu.risk.sence.item.voice.VoiceRecognition','com.dankegongyu.thirdparty.controller.filter.LogFilter'\n) and  create_at >{create_at_start} AND create_at < {create_at_end}  group by type";
+        sql = "select type,count(*) FROM rpc_logs where   create_at >{create_at_start} AND create_at < {create_at_end} group by type ";
+        sql = "select type,count(*) FROM rpc_logs where type in ('com.dankegongyu.risk.sence.item.voice.VoiceRecognition','com.dankegongyu.thirdparty.controller.filter.LogFilter'\n) and  create_at >={create_at_start} AND create_at <= {create_at_end}  group by type";
 
         Object ret = SqlExecutor.execSql(sql, params, Map.class, "mongo");
         sql = "select count(*) from rpc_logs where  create_at>=:create_at  order by create_at desc";
@@ -94,20 +94,21 @@ public class QeormTest {
         insert.setTraceId("thistraceid");
         insert.setCreateAt(new Date());
         Map params = new HashMap() {{
-            put("create_at", DateUtils.parseDate("2019-03-10", "yyyy-MM-dd"));
             put("pn", 2);
             put("ps", 5);
         }};
+        insert.setRequestSource("this is 'soirce' \n dd");
         Object ret;
         insert.setRequestData(params);
-        ret = insert.insert();
+        ret = insert.save();
         RpcLog log = new RpcLog();
         log.setDataId("123456");
-        ret = log.select();
+        log.setRequestSource("dddd 'dsdsd' \n ssdf ");
+
+        ret = log.save();
         ret = log.count();
         System.out.println("ok");
 
     }
-
 
 }
