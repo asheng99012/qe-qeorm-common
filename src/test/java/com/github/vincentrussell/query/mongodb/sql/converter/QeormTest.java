@@ -41,9 +41,9 @@ public class QeormTest {
     public void setupProduc() throws Exception {
         session = new SqlSession();
         MongodbDataSource dataSource = new MongodbDataSource();
-        dataSource.setUrl("mongodb://dev-mongodb.danke.life:27017");
-        dataSource.setUsername("fmis_log_writer");
-        dataSource.setPassword("w7XeVaDckk9R");
+        dataSource.setUrl("mongodb://xxxxx:27017");
+        dataSource.setUsername("xxxxx");
+        dataSource.setPassword("ccccc");
         dataSource.setDatabase("fmis_log");
         dataSource.setMaxPoolSize(1);
         dataSource.setWaitQueueMultiple(100);
